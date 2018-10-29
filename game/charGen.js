@@ -8,6 +8,8 @@ class charGen
         //GenericButtons - these are the buttons for each note that scales can be created from
         this.TextBox = [];
 
+        this.StatBlock = [];
+
         this.operationButtons = [];
         
         //modebuttons - each mode is a different musical mode (major, minor, pentatonic etc)
@@ -29,13 +31,20 @@ class charGen
         this.TextBox.push( new TextBox("Intelligence", new Rect(100,220,150,50)));
         this.TextBox.push( new TextBox("Wisdom", new Rect(100,270,150,50)));
         this.TextBox.push( new TextBox("Charisma", new Rect(100,320,150,50)));
+
+        this.StatBlock.push( new TextBox("9", new Rect(260,70,100,50)));
+        this.StatBlock.push( new TextBox("9", new Rect(260,120,100,50)));
+        this.StatBlock.push( new TextBox("9", new Rect(260,170,100,50)));
+        this.StatBlock.push( new TextBox("9", new Rect(260,220,100,50)));
+        this.StatBlock.push( new TextBox("9", new Rect(260,270,100,50)));
+        this.StatBlock.push( new TextBox("9", new Rect(260,320,100,50)));
         
         this.operationButtons.push( new GenericButton("Generate", new Rect(100,380,150,50)));
     
         //add all the modebuttons - each mode is a different musical mode (major, minor, pentatonic etc)
-        this.modeButtons.push( new GenericButton("", new Rect(1470,10,120,50) ) );
-        this.modeButtons.push( new GenericButton("", new Rect(1470,70,120,50) ) );
-        this.modeButtons.push( new GenericButton("", new Rect(1470,130,120,50) ) );
+        this.modeButtons.push( new GenericButton("Expert", new Rect(1470,10,120,50) ) );
+        this.modeButtons.push( new GenericButton("Warrior", new Rect(1470,70,120,50) ) );
+        this.modeButtons.push( new GenericButton("Psychic", new Rect(1470,130,120,50) ) );
         
         //initialise the mode to match whatever mode button is selected
         let newItemID = 0;
@@ -45,6 +54,8 @@ class charGen
         //set up the currenttonic to match whatever key button is selected
         newItemID = 0;
         this.TextBox[newItemID].selected = true;
+
+        this.StatBlock[0].labelText = this.RandomNumberInRange(6);
     
     
         {
@@ -151,7 +162,14 @@ class charGen
                         }
                     
                         this.operationButtons[newItemID].selected = true;
+                        
+                        for(let i=0; i< this.StatBlock.length; i++)
+                        {
+                            this.StatBlock[i].labelText = this.GenerateStats();
+                        }
+
                         this.operationButtons[newItemID].resetSelection();
+
                     }
                 }
     
@@ -191,7 +209,7 @@ class charGen
     
     draw()
     {
-        GAZCanvas.Rect( new Rect(0,0,1600,900), 'rgb(124,0,255)');
+        GAZCanvas.Rect( new Rect(0,0,1600,900), 'rgb(12,12,64)');
     
         let fretlength = 14;
         let yspace = 66;
@@ -223,6 +241,16 @@ class charGen
         }
     
     
+        for(let i=0; i< this.operationButtons.length; i++)
+        {
+            this.operationButtons[i].draw();
+        }
+
+        for(let i=0; i< this.StatBlock.length; i++)
+        {
+            this.StatBlock[i].draw();
+        }
+
         for(let i=0; i< this.TextBox.length; i++)
         {
             this.TextBox[i].draw();
@@ -244,6 +272,33 @@ class charGen
         }
     }
     
+    // Return a random number in range from 0 to the input value.
+    RandomNumberInRange(value)
+    {
+        let temp = Math.floor(Math.random() * Math.floor(value));
+        if (temp == 0)
+        {
+            temp = 1;
+            return temp;
+        }
+        else
+        {
+            return temp;
+        }
+    }
+
+    GenerateStats()
+    {
+        let temp = this.RandomNumberInRange(6);
+        temp += this.RandomNumberInRange(6);
+        temp += this.RandomNumberInRange(6);
+
+        return temp;
+    }
+
+
+
+
     //Launch point for application
     Run()
     {

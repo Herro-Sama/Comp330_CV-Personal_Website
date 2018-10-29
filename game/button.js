@@ -42,7 +42,7 @@ class ButtonBase extends Rect
         
         if(this.active === false)
         {
-            GAZCanvas.Rect(this, 'rgb(255,127,127)') ;
+            GAZCanvas.Rect(this, 'rgb(64,127,255)') ;
         }
         else
         {
@@ -58,7 +58,7 @@ class ButtonBase extends Rect
                 }
                 else
                 {
-                    GAZCanvas.Rect(this, 'rgb(0,255,0)');
+                    GAZCanvas.Rect(this, 'rgb(0,64,124)');
                 }
             }
         }
