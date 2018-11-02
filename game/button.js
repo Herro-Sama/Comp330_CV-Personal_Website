@@ -12,7 +12,7 @@ class ButtonBase extends Rect
 
     label()
     {
-        return "add label";
+        return `add label`;
     }
 
     resetSelection()
