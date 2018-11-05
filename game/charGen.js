@@ -32,12 +32,6 @@ class charGen
         this.TextBox.push( new TextBox("Wisdom", new Rect(100,270,150,50)));
         this.TextBox.push( new TextBox("Charisma", new Rect(100,320,150,50)));
 
-        this.TextBox.push( new TextBox(`Description
-        So this
-        should 
-        be multiline shit then?
-        `, new Rect(1040, 10, 400, 300)));
-
         this.StatBlock.push( new TextBox("9", new Rect(260,70,100,50)));
         this.StatBlock.push( new TextBox("9", new Rect(260,120,100,50)));
         this.StatBlock.push( new TextBox("9", new Rect(260,170,100,50)));
