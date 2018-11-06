@@ -325,7 +325,7 @@ function updateResources()
     for (var i = 0, length = itemList.children.length; i < length; i++)
     {
         console.log()
-        itemList.children[i].innerText = resources[i].title + ": $" + resources[i].cost + " Number Owned: " + resources[i].NumberOwned;
+        itemList.children[i].innerText = resources[i].title + ": $" + resources[i].cost + " Number Owned: " + resources[i].NumberOwned + " Production Value: " + resources[i].increase;
     }
 
 }
