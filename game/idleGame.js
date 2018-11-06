@@ -2,6 +2,8 @@
 
 var idleTimer = 1000;
 
+var autosaveTimer = 60000;
+
 var gameTimeData = 
 {
     hour: 1,
@@ -14,6 +16,12 @@ var tickTimer = setInterval(function()
 {
     addHour();
 }, idleTimer)
+
+var autosave = setInterval(function()
+{
+    console.log("About to attempt an autosave");
+    performAutoSave();
+}, autosaveTimer)
 
 // Information that the player has available for themselves.
 var userData = 
@@ -249,6 +257,7 @@ function constructResources()
                 this.data.cost = Math.ceil(this.data.cost);
                 updateResources();
                 constructIncome();
+                performAutoSave();
             }
         }
     
@@ -321,13 +330,69 @@ function isEndofMonth()
 function updateResources()
 {
     var itemList = document.getElementById("resources");
-    console.log(itemList.children[0].innerText);
     for (var i = 0, length = itemList.children.length; i < length; i++)
     {
-        console.log()
         itemList.children[i].innerText = resources[i].title + ": $" + resources[i].cost + " Number Owned: " + resources[i].NumberOwned + " Production Value: " + resources[i].increase;
     }
 
 }
 
+function attemptAutoSave()
+{
+    if (typeof(Storage) !== "undefined")
+    {
+        var itemList = document.getElementById("resources");
+        if (localStorage.getItem("Credits") == undefined)
+        {
+            localStorage.setItem("Credits", "0");
+            localStorage.setItem("hourlyIncome", "0");
+            localStorage.setItem("hour", "1");
+            localStorage.setItem("day", "1");
+            localStorage.setItem("month", "1");
+            localStorage.setItem("year", "1");
+            for (var i = 0, length = itemList.children.length; i < length; i++)
+            {
+                localStorage.setItem("resourceCost"+i, resources[i].cost);
+                localStorage.setItem("resourceOwned"+i, resources[i].NumberOwned);
+            }
+        }
+        else
+        {
+            userData.credits = Number(localStorage.getItem("Credits"));
+            userData.hourlyIncome = Number(localStorage.getItem("hourlyIncome"));
+            gameTimeData.hour = Number(localStorage.getItem("hour"));
+            gameTimeData.day = Number(localStorage.getItem("day"));
+            gameTimeData.month = Number(localStorage.getItem("month"));
+            gameTimeData.year = Number(localStorage.getItem("year"));
+            for (var i = 0, length = itemList.children.length; i < length; i++)
+            {
+                itemList.children[i].innerText = resources[i].title + ": $" + localStorage.getItem("resourceCost"+i) + " Number Owned: " + localStorage.getItem("resourceOwned"+i) + " Production Value: " + resources[i].increase;
+                itemList.children[i].data.cost = Number(localStorage.getItem("resourceCost"+i));
+                itemList.children[i].data.NumberOwned = Number(localStorage.getItem("resourceOwned"+i));
+            }
+
+        }
+    } 
+}
+
+function performAutoSave()
+{
+    if (typeof(Storage) !== "undefined")
+    {
+        var itemList = document.getElementById("resources");
+        localStorage.setItem("Credits", userData.credits);
+        localStorage.setItem("hourlyIncome", userData.hourlyIncome);
+        localStorage.setItem("hour", gameTimeData.hour);
+        localStorage.setItem("day", gameTimeData.day);
+        localStorage.setItem("month", gameTimeData.month);
+        localStorage.setItem("year", gameTimeData.year);
+        for (var i = 0, length = itemList.children.length; i < length; i++)
+        {
+            localStorage.setItem("resourceCost"+i, itemList.children[i].data.cost);
+            localStorage.setItem("resourceOwned"+i, itemList.children[i].data.NumberOwned);
+        }
+    } 
+}
+
 constructResources();
+attemptAutoSave();
