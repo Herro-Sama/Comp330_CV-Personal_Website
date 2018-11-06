@@ -1,6 +1,6 @@
 // Based on the following tutorial https://www.youtube.com/watch?v=vG0o6OFJDtU
 
-var idleTimer = 100;
+var idleTimer = 1000;
 
 var gameTimeData = 
 {
@@ -19,7 +19,7 @@ var tickTimer = setInterval(function()
 var userData = 
 {
     credits: 0,
-    hourlyIncome: 1,
+    hourlyIncome: 0,
     inventory: {}
 }
 
@@ -238,6 +238,7 @@ function constructIncome()
 function constructResources()
 {
     var itemList = document.getElementById("resources")
+
     for (var i = 0, length = resources.length; i < length; i++)
     {
         var newItem = document.createElement('h4');
@@ -263,6 +264,17 @@ function constructResources()
         itemList.appendChild(newItem);
         
     }
+
+    var moneyMaking = document.getElementById("Manual-Click");
+    moneyMaking.innerText = "Manually Make Money"
+    moneyMaking.onclick = function()
+    {
+        userData.credits++;
+        constructIncome();
+    }
+
+
+
 };
 
 function isEndofMonth()
