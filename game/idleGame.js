@@ -52,14 +52,6 @@ var resources =
     },
 
     {
-        title: "Mercenaries",
-        cost: 2500,
-        baseCost: 2500,
-        increase: 0,
-        NumberOwned: 0,
-    },
-
-    {
         title: "Freighter Contract",
         cost: 12000,
         baseCost: 12000,
@@ -244,7 +236,7 @@ function constructResources()
         var newItem = document.createElement('h4');
         var index = i;
         newItem.data = resources[i];
-        newItem.innerText = newItem.data.title + ": $" + newItem.data.cost + " Number Owned: " + newItem.data.NumberOwned;
+        newItem.innerText = newItem.data.title + ": $" + newItem.data.cost + " Number Owned: " + newItem.data.NumberOwned + " Production Value: " + newItem.data.increase;
 
         newItem.onclick = function()
         {
