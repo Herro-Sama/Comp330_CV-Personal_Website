@@ -275,7 +275,7 @@ class charGen
     // Return a random number in range from 0 to the input value.
     RandomNumberInRange(value)
     {
-        let temp = Math.floor(Math.random() * Math.floor(value));
+        let temp = Math.floor(Math.random() * value);
         if (temp == 0)
         {
             temp = 1;
@@ -287,9 +287,11 @@ class charGen
         }
     }
 
+	
+	//Generate Character Stats from a range of 3 upwards to 18
     GenerateStats()
     {
-        let temp = this.RandomNumberInRange(15);
+        let temp = this.RandomNumberInRange(16);
         temp += 3;
 
 

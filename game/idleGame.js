@@ -1,9 +1,21 @@
 // Based on the following tutorial https://www.youtube.com/watch?v=vG0o6OFJDtU
 
+/* The function of the .js file is to contain all elements needed for running an idle clicker game.
+*  The flow is as follows.
+*  The timer functions are started handle most of the core gameplay
+*  From there the construction functions are located which are used to place text on-screen to actually let users know what they are doing.
+*  Then there is an update function which is called when the user clicks on a resource in-order to update the information they display to ensure that it is up to date with any changes made.
+*  Finally the bottom section covers the data storage to ensure that users can continue play when using the same device from where they left off.
+*/
+
+
+// The variable used to store the time for performing idle functions in milliseconds.
 var idleTimer = 1000;
 
+// The variable used to store the time for autosaving in milliseconds.
 var autosaveTimer = 60000;
 
+// The data which is used to keep track of time.
 var gameTimeData = 
 {
     hour: 1,
@@ -12,23 +24,23 @@ var gameTimeData =
     year: 1
 }
 
+// Function to start the idle timer which allows for the date to be increased once every second.
 var tickTimer = setInterval(function()
 {
     addHour();
 }, idleTimer)
 
+// Function called once a minute to save the users data.
 var autosave = setInterval(function()
 {
-    console.log("About to attempt an autosave");
     performAutoSave();
 }, autosaveTimer)
 
-// Information that the player has available for themselves.
+// Information about the player like their current credit balance and hourly income.
 var userData = 
 {
     credits: 0,
-    hourlyIncome: 0,
-    inventory: {}
+    hourlyIncome: 0
 }
 
 // The various upgrades available for the player to purchase in-game.
@@ -164,7 +176,7 @@ var resources =
     }
 ];
 
-//User data functions
+// Function which is called to add income for the player based on the number of upgrades they have.
 function addhourlyIncome()
 {
     userData.credits += userData.hourlyIncome;
@@ -172,7 +184,12 @@ function addhourlyIncome()
 }
 
 //Timer functions
-function addHour(){
+/* Function which is called every tickTimer pass. 
+*  It checks if the there are enough hours for it to be a new day and then adds a new day if applicable.
+*  It also refreshes the timer on screen to reflect the new information, while also adding player hourlyIncome to their credit balance.
+*/
+function addHour()
+{
     if (gameTimeData.hour !== 24)
     {
         gameTimeData.hour++;
@@ -186,6 +203,10 @@ function addHour(){
     addhourlyIncome();
 };
 
+
+/* Function increments the day every 24 hours.
+*  If it is the end of the month it resets the day back to the first.
+*/
 function addDay()
 {
 
@@ -202,6 +223,9 @@ function addDay()
     constructTimeSection()
 };
 
+/* Function increments the month based on a calendar.
+*  If it is the end of the year it resets the month back to the first.
+*/
 function addMonth()
 {
     if(gameTimeData.month !== 12)
@@ -216,6 +240,62 @@ function addMonth()
     constructTimeSection()
 };
 
+/* This is a helper function which stores the infromation about each month of the year
+*  When called it will check if the number of days has been reached to consider it the end of the month.
+*  If the conditions are met then it becomes a new month.
+*/
+function isEndofMonth()
+{
+    var endofMonth = false;
+
+    switch (true)
+    {
+        case(gameTimeData.month === 1 && gameTimeData.day === 31): //January
+            endofMonth = true;
+            break;    
+        case(gameTimeData.month === 2 && gameTimeData.day === 28): //February
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 3 && gameTimeData.day === 31): // March
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 4 && gameTimeData.day === 30): // April
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 5 && gameTimeData.day === 31): // May
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 6 && gameTimeData.day === 30): // June
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 7 && gameTimeData.day === 31): // July
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 8 && gameTimeData.day === 31): // August
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 9 && gameTimeData.day === 30): // September
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 10 && gameTimeData.day === 31): // October
+            endofMonth = true;
+            break;
+        case(gameTimeData.month === 11 && gameTimeData.day === 30): // November
+            endofMonth = true;
+            break;        
+        case(gameTimeData.month === 12 && gameTimeData.day === 31): // December
+            endofMonth = true;
+            break;
+        default:
+            endofMonth = false;    
+    }   
+
+    return endofMonth;
+};
+
+/* This function is called by all the date change functions
+*  This is used to update the time section with any changes to ensure it displays the correct time.
+*/
 function constructTimeSection()
 {
     var timesection = document.getElementById('Game-Time');
@@ -226,6 +306,9 @@ function constructTimeSection()
 
 };
 
+/* This function is called every tick to show to reflect any changes to the users funds.
+*  This shows information like the hourlyIncome the user has and how many credits they currently own.
+*/
 function constructIncome()
 {
     var incomesection = document.getElementById('User-Income');
@@ -235,6 +318,10 @@ function constructIncome()
     incomesection.innerText = incomeMessage;
 };
 
+/* This function passes all the resources and creates effectively a button.
+*  When clicked they then perform the function of increasing the users hourlyIncome.
+*  This goes through each of the resources iteratively assigning their default values.
+*/
 function constructResources()
 {
     var itemList = document.getElementById("resources")
@@ -242,25 +329,25 @@ function constructResources()
     for (var i = 0, length = resources.length; i < length; i++)
     {
         var newItem = document.createElement('h4');
-        var index = i;
         newItem.data = resources[i];
-        newItem.innerText = newItem.data.title + ": $" + newItem.data.cost + " Number Owned: " + newItem.data.NumberOwned + " Production Value: " + newItem.data.increase;
-
-        newItem.onclick = function()
-        {
-            if(userData.credits >= this.data.cost)
-            {
-                userData.credits -= this.data.cost;
-                userData.hourlyIncome += this.data.increase;
-                this.data.NumberOwned++;
-                this.data.cost = this.data.baseCost * (this.data.NumberOwned * 1.15);
-                this.data.cost = Math.ceil(this.data.cost);
-                updateResources();
-                constructIncome();
-                performAutoSave();
-            }
-        }
     
+            newItem.data = resources[i];
+            newItem.innerText = newItem.data.title + ": $" + newItem.data.cost + " Number Owned: " + newItem.data.NumberOwned + " Production Value: " + newItem.data.increase;
+
+            newItem.onclick = function()
+            {
+                if(userData.credits >= this.data.cost)
+                {
+                    userData.credits -= this.data.cost;
+                    userData.hourlyIncome += this.data.increase;
+                    this.data.NumberOwned++;
+                    this.data.cost = this.data.baseCost * (this.data.NumberOwned * 1.15);
+                    this.data.cost = Math.ceil(this.data.cost);
+                    updateResources();
+                    constructIncome();
+                    performAutoSave();
+                }
+            }
 
         itemList.appendChild(newItem);
         
@@ -278,55 +365,10 @@ function constructResources()
 
 };
 
-function isEndofMonth()
-{
-    var endofMonth = false;
-
-    switch (true)
-    {
-        case(gameTimeData.month === 1 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;    
-        case(gameTimeData.month === 2 && gameTimeData.day === 28):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 3 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 4 && gameTimeData.day === 30):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 5 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 6 && gameTimeData.day === 30):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 7 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 8 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 9 && gameTimeData.day === 30):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 10 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        case(gameTimeData.month === 11 && gameTimeData.day === 30):
-            endofMonth = true;
-            break;        
-        case(gameTimeData.month === 12 && gameTimeData.day === 31):
-            endofMonth = true;
-            break;
-        default:
-            endofMonth = false;    
-    }   
-
-    return endofMonth;
-};
-
+/* This function is called whenever resources need to be updated.
+*  This is for when users buy new resources to make sure the price and number owned are updated.
+*  It iterates through the entire resource list to update each one accordingly. 
+*/
 function updateResources()
 {
     var itemList = document.getElementById("resources");
@@ -337,7 +379,10 @@ function updateResources()
 
 }
 
-function attemptAutoSave()
+/* This is called when the user first connects to the game, it allocates data to each of the needed values or if they already exist then it opens them for use by the user.
+*  If the user has already player before the resources they owned are also automatically stored for them.
+*/
+function InitalDataLoad()
 {
     if (typeof(Storage) !== "undefined")
     {
@@ -375,6 +420,9 @@ function attemptAutoSave()
     } 
 }
 
+/* The game attempts to autosave every 60 seconds if the user hasn't bought anything
+*  The game will also save if the user buys any new resources.
+*/
 function performAutoSave()
 {
     if (typeof(Storage) !== "undefined")
@@ -394,5 +442,8 @@ function performAutoSave()
     } 
 }
 
+// These are called at the start of the project to make sure that the game values appear on launch rather then after the first tick has passed.
+constructTimeSection();
+constructIncome();
 constructResources();
-attemptAutoSave();
+InitalDataLoad();
